@@ -2,14 +2,15 @@ require './z_order'
 class Star
   attr_reader :x, :y
 
-  def initialize(animation)
+  def initialize(window, animation)
+    @window = window
     @animation = animation
     @color = Gosu::Color.new(0xff_000000)
     @color.red = rand(256 - 40) + 40
     @color.green = rand(256 - 40) + 40
     @color.blue = rand(256 - 40) + 40
-    @x = rand * 640
-    @y = rand * 480
+    @x = rand @window.width
+    @y = rand @window.height
   end
 
   def draw

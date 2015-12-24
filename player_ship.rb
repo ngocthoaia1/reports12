@@ -1,9 +1,12 @@
-class Player
-  def initialize
+require './lib/game_object'
+
+class PlayerShip < GameObject
+  def initialize window
     @image = Gosu::Image.new("media/starfighter.bmp")
     @beep = Gosu::Sample.new("media/beep.wav")
     @x = @y = @vel_x = @vel_y = @angle = 0.0
     @score = 0
+    @window = window
   end
 
   def warp(x, y)
@@ -35,17 +38,22 @@ class Player
     @x += @vel_x
     @y += @vel_y
     padding = 16
-    @x = 640 - padding if @x > 640 - padding
-    @y = 480 - padding if @y > 480 - padding
-    @x = padding if @x < padding
-    @y = padding if @y < padding
+    @x = [@window.width - padding, @x].min
+    @y = [@window.height - padding, @y].min
+    @x = [padding, @x].max
+    @y = [padding, @y].max
 
     @vel_x *= 0.96
     @vel_y *= 0.96
   end
 
   def draw
-    @image.draw_rot(@x, @y, 1, @angle, 0.5, 0.5, 0.7, 0.7)
+    if exploding?
+      @explosion.update
+      @explosion.draw
+    else
+      @image.draw_rot(@x, @y, 1, @angle, 0.5, 0.5, 0.7, 0.7)
+    end
   end
 
   def score
